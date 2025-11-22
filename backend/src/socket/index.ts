@@ -11,6 +11,11 @@ import {
 import { socketAuthMiddleware } from '../middleware/socket.middleware';
 import { handleConnection } from './handlers/connection.handler';
 import { handleCreateRoom, handleJoinRoom, handleLeaveRoom } from './handlers/room.handler';
+import {
+  handlePlaceShips,
+  handleFireShot,
+  handleRequestGameState,
+} from './handlers/game.handler';
 
 export function setupSocketServer(httpServer: HTTPServer): Server {
   const io = new Server<
@@ -40,7 +45,10 @@ export function setupSocketServer(httpServer: HTTPServer): Server {
     socket.on('joinRoom', (roomCode) => handleJoinRoom(socket, roomCode));
     socket.on('leaveRoom', () => handleLeaveRoom(socket));
 
-    // Additional game events will be added in Step 3
+    // Game events
+    socket.on('placeShips', (ships) => handlePlaceShips(socket, io, ships));
+    socket.on('fireShot', (coordinate) => handleFireShot(socket, io, coordinate));
+    socket.on('requestGameState', () => handleRequestGameState(socket));
   });
 
   console.log('✅ Socket.io server configured');

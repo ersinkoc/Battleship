@@ -1,36 +1,25 @@
 // Mock Prisma Client for testing
+// Note: @prisma/client is mocked globally in tests/setup.ts
+// This file provides access to the mock instance for test assertions
 
-export const mockPrismaClient = {
-  user: {
-    create: jest.fn(),
-    findUnique: jest.fn(),
-    findMany: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-  },
-  match: {
-    create: jest.fn(),
-    findUnique: jest.fn(),
-    findMany: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-  },
-  $connect: jest.fn().mockResolvedValue(undefined),
-  $disconnect: jest.fn().mockResolvedValue(undefined),
-  $queryRaw: jest.fn(),
-};
+import { PrismaClient } from '@prisma/client';
 
-jest.mock('@prisma/client', () => ({
-  PrismaClient: jest.fn(() => mockPrismaClient),
-  MatchStatus: {
-    IN_PROGRESS: 'IN_PROGRESS',
-    COMPLETED: 'COMPLETED',
-    ABANDONED: 'ABANDONED',
-  },
-}));
+// Get the mocked Prisma instance
+// Since PrismaClient is mocked in setup.ts, this will return the mock
+export const mockPrismaClient = new PrismaClient() as any;
 
 export const resetPrismaMocks = () => {
-  Object.values(mockPrismaClient.user).forEach((fn: any) => fn.mockReset());
-  Object.values(mockPrismaClient.match).forEach((fn: any) => fn.mockReset());
-  mockPrismaClient.$queryRaw.mockReset();
+  if (mockPrismaClient.user) {
+    Object.values(mockPrismaClient.user).forEach((fn: any) => {
+      if (typeof fn?.mockReset === 'function') fn.mockReset();
+    });
+  }
+  if (mockPrismaClient.match) {
+    Object.values(mockPrismaClient.match).forEach((fn: any) => {
+      if (typeof fn?.mockReset === 'function') fn.mockReset();
+    });
+  }
+  if (typeof mockPrismaClient.$queryRaw?.mockReset === 'function') {
+    mockPrismaClient.$queryRaw.mockReset();
+  }
 };

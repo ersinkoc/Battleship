@@ -1,6 +1,6 @@
 // Auth Middleware Tests
 
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { authenticateToken, optionalAuth } from '../../../src/middleware/auth.middleware';
 import { AuthRequest } from '../../../src/types';
 import * as jwtUtil from '../../../src/utils/jwt.util';

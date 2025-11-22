@@ -1,9 +1,7 @@
 // Connection Handler Tests
 
-import { Socket } from 'socket.io';
 import { handleConnection } from '../../../../src/socket/handlers/connection.handler';
 import { redisService } from '../../../../src/services/redis.service';
-import { SocketData } from '../../../../src/types';
 
 jest.mock('../../../../src/services/redis.service');
 

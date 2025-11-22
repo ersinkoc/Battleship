@@ -1,6 +1,5 @@
 // Game Handler Tests
 
-import { Socket } from 'socket.io';
 import {
   handlePlaceShips,
   handleFireShot,

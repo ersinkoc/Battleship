@@ -11,7 +11,6 @@ import {
   getSunkShips,
 } from '../../../src/utils/ship.util';
 import { Ship, ShipPlacement } from '../../../src/types';
-import { SHIP_TYPES } from '../../../src/models/game.constants';
 
 describe('Ship Utils', () => {
   describe('validateShipPlacement', () => {

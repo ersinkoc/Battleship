@@ -1,13 +1,12 @@
 // Room Handler Tests
 
-import { Socket } from 'socket.io';
 import {
   handleCreateRoom,
   handleJoinRoom,
   handleLeaveRoom,
 } from '../../../../src/socket/handlers/room.handler';
 import { redisService } from '../../../../src/services/redis.service';
-import { GameRoom, SocketData } from '../../../../src/types';
+import { GameRoom } from '../../../../src/types';
 
 jest.mock('../../../../src/services/redis.service');
 

@@ -3,7 +3,6 @@
 import { gameService } from '../../../src/services/game.service';
 import { redisService } from '../../../src/services/redis.service';
 import { GameRoom, ShipPlacement } from '../../../src/types';
-import * as shipUtil from '../../../src/utils/ship.util';
 
 // Mock the services
 jest.mock('../../../src/services/redis.service');

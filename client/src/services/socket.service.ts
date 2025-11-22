@@ -10,15 +10,12 @@ import type {
 
 class SocketService {
   private socket: Socket<ServerToClientEvents, ClientToServerEvents> | null = null;
-  private token: string | null = null;
 
   /**
    * Connect to server with authentication token
    */
   public connect(token: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.token = token;
-
       this.socket = io('http://localhost:4000', {
         auth: {
           token: token,

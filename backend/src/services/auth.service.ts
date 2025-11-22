@@ -159,8 +159,17 @@ class AuthService {
    * Remove sensitive data from user object
    */
   private sanitizeUser(user: User): SafeUser {
-    const { passwordHash, ...safeUser } = user;
-    return safeUser;
+    const { passwordHash, ...rest } = user;
+    return {
+      ...rest,
+      stats: {
+        gamesPlayed: user.gamesPlayed,
+        gamesWon: user.gamesWon,
+        gamesLost: user.gamesLost,
+        totalShots: user.totalShots,
+        totalHits: user.totalHits,
+      },
+    };
   }
 }
 

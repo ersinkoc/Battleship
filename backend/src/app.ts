@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Request logging middleware (development only)
 if (process.env.NODE_ENV === 'development') {
-  app.use((req: Request, res: Response, next: NextFunction) => {
+  app.use((req: Request, _res: Response, next: NextFunction) => {
     console.log(`${req.method} ${req.path}`);
     next();
   });
@@ -35,7 +35,7 @@ app.get('/api/health', healthCheck);
 app.use('/api/auth', authRoutes);
 
 // 404 handler
-app.use((req: Request, res: Response) => {
+app.use((_req: Request, res: Response) => {
   res.status(404).json({
     success: false,
     message: 'Route not found',
@@ -43,7 +43,7 @@ app.use((req: Request, res: Response) => {
 });
 
 // Global error handler
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error('Global error handler:', err);
   res.status(500).json({
     success: false,

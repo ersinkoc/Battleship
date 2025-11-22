@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { JWTPayload } from '../types';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
+const JWT_EXPIRES_IN: string | number = process.env.JWT_EXPIRES_IN || '7d';
 
 /**
  * Generate a JWT token for a user
@@ -16,7 +16,7 @@ export function generateToken(userId: string, email: string): string {
   };
 
   return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN as string | number,
+    expiresIn: JWT_EXPIRES_IN,
   });
 }
 

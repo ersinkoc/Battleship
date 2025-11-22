@@ -212,4 +212,12 @@ export interface ApiResponse<T = any> {
 }
 
 // User without sensitive data
-export type SafeUser = Omit<User, 'passwordHash'>;
+export type SafeUser = Omit<User, 'passwordHash' | 'gamesPlayed' | 'gamesWon' | 'gamesLost' | 'totalShots' | 'totalHits'> & {
+  stats: {
+    gamesPlayed: number;
+    gamesWon: number;
+    gamesLost: number;
+    totalShots: number;
+    totalHits: number;
+  };
+};

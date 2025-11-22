@@ -81,7 +81,7 @@ export class GameBoard {
     // Clear existing ships
     this.shipsGroup.clear();
 
-    ships.forEach((ship, index) => {
+    ships.forEach((ship, _index) => {
       const shipGroup = createVoxelShip(
         ship.coordinates,
         this.voxelSize,

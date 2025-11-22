@@ -56,7 +56,7 @@ export function validate<T>(schema: z.ZodSchema<T>, data: unknown): {
     if (error instanceof z.ZodError) {
       return {
         success: false,
-        errors: error.errors.map((err) => err.message),
+        errors: error.issues.map((err: z.ZodIssue) => err.message),
       };
     }
     return {

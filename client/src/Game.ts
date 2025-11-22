@@ -6,7 +6,7 @@ import { UIController } from './components/UIController';
 import { GameState } from './services/GameState';
 import { apiService } from './services/api.service';
 import { socketService } from './services/socket.service';
-import { GamePhase, Coordinate, SHIP_TYPES } from './types';
+import { GamePhase, Coordinate } from './types';
 
 export class Game {
   private sceneManager: SceneManager;
@@ -15,7 +15,6 @@ export class Game {
   private ui: UIController;
   private state: GameState;
 
-  private isInitialized: boolean = false;
   private currentHoverCoord: Coordinate | null = null;
 
   constructor() {
@@ -48,8 +47,6 @@ export class Game {
     if (this.state.isAuthenticated()) {
       this.autoLogin();
     }
-
-    this.isInitialized = true;
   }
 
   /**
@@ -464,7 +461,7 @@ export class Game {
   /**
    * Handle board click
    */
-  private handleBoardClick(event: MouseEvent): void {
+  private handleBoardClick(_event: MouseEvent): void {
     const phase = this.ui.getCurrentPhase();
 
     if (phase === GamePhase.SHIP_PLACEMENT && this.currentHoverCoord) {

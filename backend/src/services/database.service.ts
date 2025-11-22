@@ -1,6 +1,7 @@
 // Prisma database service - singleton instance
 
 import { PrismaClient } from '@prisma/client';
+import config from '../../prisma/prisma.config';
 
 class DatabaseService {
   private prisma: PrismaClient;
@@ -8,6 +9,7 @@ class DatabaseService {
 
   constructor() {
     this.prisma = new PrismaClient({
+      ...config,
       log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
     });
 

@@ -1,6 +1,6 @@
 // Game state management service
 
-import { GameRoom, PlayerBoard, Ship, ShipPlacement, Coordinate, ShotResult } from '../types';
+import { GameRoom, ShipPlacement, Coordinate, ShotResult } from '../types';
 import { redisService } from './redis.service';
 import {
   validateAllShipPlacements,
@@ -199,7 +199,7 @@ class GameService {
   /**
    * Get game state for a specific player
    */
-  async getGameState(roomCode: string, playerId: string): Promise<GameRoom | null> {
+  async getGameState(roomCode: string, _playerId: string): Promise<GameRoom | null> {
     return await redisService.getGameRoom(roomCode);
   }
 
@@ -209,7 +209,7 @@ class GameService {
   async endGame(
     roomCode: string,
     winnerId: string,
-    reason: 'opponent_left' | 'timeout'
+    _reason: 'opponent_left' | 'timeout'
   ): Promise<void> {
     const room = await redisService.getGameRoom(roomCode);
     if (!room) return;

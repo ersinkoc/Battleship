@@ -4,71 +4,119 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Voxel Battleship</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        overflow: hidden;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      }
-
-      #app {
-        width: 100vw;
-        height: 100vh;
-        position: relative;
-      }
-
-      #canvas-container {
-        width: 100%;
-        height: 100%;
-      }
-
-      /* UI Overlay Container */
-      #ui-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-      }
-
-      #ui-overlay > * {
-        pointer-events: auto;
-      }
-
-      /* Loading Screen */
-      #loading-screen {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-size: 24px;
-        z-index: 1000;
-      }
-
-      #loading-screen.hidden {
-        display: none;
-      }
-    </style>
+    <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
     <div id="app">
       <div id="canvas-container"></div>
       <div id="ui-overlay">
-        <div id="loading-screen">
-          <div>Loading Voxel Battleship...</div>
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="hidden">
+          <div class="loading-content">
+            <h2>Loading Voxel Battleship...</h2>
+            <div class="loader"></div>
+          </div>
+        </div>
+
+        <!-- Login Screen -->
+        <div id="login-screen" class="screen">
+          <div class="panel">
+            <h1>🚢 Voxel Battleship</h1>
+            <div id="login-form" class="form-container">
+              <h2>Login</h2>
+              <input type="email" id="login-email" placeholder="Email" />
+              <input type="password" id="login-password" placeholder="Password" />
+              <button id="login-btn" class="btn btn-primary">Login</button>
+              <button id="show-register-btn" class="btn btn-secondary">Create Account</button>
+            </div>
+            <div id="register-form" class="form-container hidden">
+              <h2>Register</h2>
+              <input type="email" id="register-email" placeholder="Email" />
+              <input type="password" id="register-password" placeholder="Password (min 8 chars)" />
+              <button id="register-btn" class="btn btn-primary">Register</button>
+              <button id="show-login-btn" class="btn btn-secondary">Back to Login</button>
+            </div>
+            <div id="auth-error" class="error-message hidden"></div>
+          </div>
+        </div>
+
+        <!-- Lobby Screen -->
+        <div id="lobby-screen" class="screen hidden">
+          <div class="panel">
+            <h1>Welcome, <span id="user-email"></span>!</h1>
+            <div class="stats-panel">
+              <h3>Your Stats</h3>
+              <div class="stats-grid">
+                <div><strong>Games:</strong> <span id="stat-games">0</span></div>
+                <div><strong>Wins:</strong> <span id="stat-wins">0</span></div>
+                <div><strong>Losses:</strong> <span id="stat-losses">0</span></div>
+                <div><strong>Accuracy:</strong> <span id="stat-accuracy">0%</span></div>
+              </div>
+            </div>
+            <div class="btn-group">
+              <button id="create-room-btn" class="btn btn-primary btn-large">Create New Game</button>
+              <button id="join-room-btn" class="btn btn-secondary btn-large">Join Game</button>
+            </div>
+            <div id="join-room-input" class="input-group hidden">
+              <input type="text" id="room-code-input" placeholder="Enter Room Code (e.g., ABC123)" maxlength="6" />
+              <button id="submit-join-btn" class="btn btn-primary">Join</button>
+              <button id="cancel-join-btn" class="btn btn-secondary">Cancel</button>
+            </div>
+            <button id="logout-btn" class="btn btn-text">Logout</button>
+          </div>
+        </div>
+
+        <!-- Waiting Screen -->
+        <div id="waiting-screen" class="screen hidden">
+          <div class="panel">
+            <h2>Waiting for Opponent...</h2>
+            <div class="room-code-display">
+              <label>Room Code:</label>
+              <div class="code"><span id="room-code-display"></span></div>
+            </div>
+            <p>Share this code with your opponent!</p>
+            <button id="cancel-room-btn" class="btn btn-secondary">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Game HUD -->
+        <div id="game-hud" class="hidden">
+          <div class="hud-top">
+            <div class="hud-panel">
+              <strong>Room:</strong> <span id="hud-room-code"></span>
+            </div>
+            <div class="hud-panel">
+              <strong>Status:</strong> <span id="hud-status"></span>
+            </div>
+            <div class="hud-panel">
+              <strong>Turn:</strong> <span id="hud-turn"></span>
+            </div>
+          </div>
+          <div id="notification-area" class="notification hidden"></div>
+        </div>
+
+        <!-- Ship Placement UI -->
+        <div id="ship-placement-ui" class="hidden">
+          <div class="panel ship-placement-panel">
+            <h3>Place Your Ships</h3>
+            <div id="ship-list" class="ship-list"></div>
+            <div class="controls">
+              <button id="rotate-ship-btn" class="btn btn-secondary">Rotate (R)</button>
+              <button id="confirm-placement-btn" class="btn btn-primary" disabled>Confirm Placement</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="screen hidden">
+          <div class="panel">
+            <h1 id="game-over-title"></h1>
+            <div id="game-over-stats" class="stats-grid"></div>
+            <div class="btn-group">
+              <button id="play-again-btn" class="btn btn-primary btn-large">Play Again</button>
+              <button id="back-to-lobby-btn" class="btn btn-secondary btn-large">Back to Lobby</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -112,7 +112,8 @@ describe('Room Handler', () => {
   });
 
   describe('handleJoinRoom', () => {
-    const mockRoom: GameRoom = {
+    // Helper function to create a fresh room object for each test
+    const createMockRoom = (): GameRoom => ({
       roomCode: 'ROOM01',
       player1Id: 'other-user',
       status: 'waiting',
@@ -120,11 +121,11 @@ describe('Room Handler', () => {
       playersReady: {},
       gameStats: {},
       createdAt: Date.now(),
-    };
+    });
 
     it('should join room successfully', async () => {
       (redisService.getUserRoom as jest.Mock).mockResolvedValue(null);
-      (redisService.getGameRoom as jest.Mock).mockResolvedValue(mockRoom);
+      (redisService.getGameRoom as jest.Mock).mockResolvedValue(createMockRoom());
 
       await handleJoinRoom(mockSocket, 'ROOM01');
 
@@ -168,7 +169,7 @@ describe('Room Handler', () => {
     it('should reject if room is full', async () => {
       (redisService.getUserRoom as jest.Mock).mockResolvedValue(null);
       (redisService.getGameRoom as jest.Mock).mockResolvedValue({
-        ...mockRoom,
+        ...createMockRoom(),
         player2Id: 'another-user',
       });
 
@@ -180,7 +181,7 @@ describe('Room Handler', () => {
     it('should reject if trying to join own room', async () => {
       (redisService.getUserRoom as jest.Mock).mockResolvedValue(null);
       (redisService.getGameRoom as jest.Mock).mockResolvedValue({
-        ...mockRoom,
+        ...createMockRoom(),
         player1Id: 'user-123',
       });
 
@@ -191,7 +192,7 @@ describe('Room Handler', () => {
 
     it('should update room status to setup', async () => {
       (redisService.getUserRoom as jest.Mock).mockResolvedValue(null);
-      (redisService.getGameRoom as jest.Mock).mockResolvedValue(mockRoom);
+      (redisService.getGameRoom as jest.Mock).mockResolvedValue(createMockRoom());
 
       await handleJoinRoom(mockSocket, 'ROOM01');
 
@@ -206,7 +207,7 @@ describe('Room Handler', () => {
 
     it('should notify other player', async () => {
       (redisService.getUserRoom as jest.Mock).mockResolvedValue(null);
-      (redisService.getGameRoom as jest.Mock).mockResolvedValue(mockRoom);
+      (redisService.getGameRoom as jest.Mock).mockResolvedValue(createMockRoom());
 
       await handleJoinRoom(mockSocket, 'ROOM01');
 

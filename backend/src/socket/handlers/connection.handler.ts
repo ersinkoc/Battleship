@@ -53,12 +53,16 @@ export function handleConnection(
           await redisService.deleteGameRoom(roomCode);
         }
       }
-
-      // Clean up socket mappings
-      await redisService.deleteSocketUser(socket.id);
-      await redisService.deleteUserSocket(user.id);
     } catch (error) {
       console.error('Error handling disconnect:', error);
+    } finally {
+      // Always clean up socket mappings, even if room cleanup fails
+      try {
+        await redisService.deleteSocketUser(socket.id);
+        await redisService.deleteUserSocket(user.id);
+      } catch (cleanupError) {
+        console.error('Error cleaning up socket mappings:', cleanupError);
+      }
     }
   });
 

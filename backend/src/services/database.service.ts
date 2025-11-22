@@ -17,7 +17,7 @@ class DatabaseService {
         console.log('✅ Database connected successfully');
         this.isConnected = true;
       })
-      .catch((error) => {
+      .catch((error: Error) => {
         console.error('❌ Database connection failed:', error);
         this.isConnected = false;
       });

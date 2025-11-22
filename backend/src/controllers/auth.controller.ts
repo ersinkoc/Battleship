@@ -122,7 +122,7 @@ export async function getProfile(req: AuthRequest, res: Response): Promise<void>
  * Health check endpoint
  * GET /api/health
  */
-export async function healthCheck(req: AuthRequest, res: Response): Promise<void> {
+export async function healthCheck(_req: AuthRequest, res: Response): Promise<void> {
   res.status(200).json({
     success: true,
     message: 'Server is running',

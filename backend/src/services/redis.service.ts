@@ -45,6 +45,8 @@ class RedisService {
       player1Id,
       status: 'waiting',
       boards: {},
+      playersReady: {},
+      gameStats: {},
       createdAt: Date.now(),
     };
 

@@ -11,25 +11,30 @@ describe('Socket Auth Middleware', () => {
   let mockSocket: Partial<Socket<any, any, any, SocketData>>;
   let mockNext: jest.Mock<void, [err?: Error]>;
 
-  beforeEach(() => {
-    mockSocket = {
+  const createMockSocket = (authData: any = {}) => {
+    const socket: any = {
       id: 'socket-123',
-      handshake: {
-        auth: {},
-      } as any,
       data: {} as SocketData,
     };
 
-    mockNext = jest.fn();
+    Object.defineProperty(socket, 'handshake', {
+      value: { auth: authData },
+      writable: true,
+      configurable: true,
+    });
 
+    return socket;
+  };
+
+  beforeEach(() => {
+    mockSocket = createMockSocket({});
+    mockNext = jest.fn();
     jest.clearAllMocks();
   });
 
   describe('socketAuthMiddleware', () => {
     it('should authenticate socket with valid token', () => {
-      mockSocket.handshake = {
-        auth: { token: 'valid-token' },
-      } as any;
+      mockSocket = createMockSocket({ token: 'valid-token' });
 
       (jwtUtil.verifyToken as jest.Mock).mockReturnValue({
         userId: 'user-123',
@@ -49,9 +54,7 @@ describe('Socket Auth Middleware', () => {
     });
 
     it('should reject connection with no token', () => {
-      mockSocket.handshake = {
-        auth: {},
-      } as any;
+      mockSocket = createMockSocket({});
 
       socketAuthMiddleware(
         mockSocket as Socket<any, any, any, SocketData>,
@@ -63,9 +66,7 @@ describe('Socket Auth Middleware', () => {
     });
 
     it('should reject connection with invalid token', () => {
-      mockSocket.handshake = {
-        auth: { token: 'invalid-token' },
-      } as any;
+      mockSocket = createMockSocket({ token: 'invalid-token' });
 
       (jwtUtil.verifyToken as jest.Mock).mockReturnValue(null);
 
@@ -79,9 +80,7 @@ describe('Socket Auth Middleware', () => {
     });
 
     it('should handle token verification errors', () => {
-      mockSocket.handshake = {
-        auth: { token: 'token' },
-      } as any;
+      mockSocket = createMockSocket({ token: 'token' });
 
       (jwtUtil.verifyToken as jest.Mock).mockImplementation(() => {
         throw new Error('Verification error');
@@ -97,9 +96,7 @@ describe('Socket Auth Middleware', () => {
     });
 
     it('should extract user ID and email correctly', () => {
-      mockSocket.handshake = {
-        auth: { token: 'valid-token' },
-      } as any;
+      mockSocket = createMockSocket({ token: 'valid-token' });
 
       (jwtUtil.verifyToken as jest.Mock).mockReturnValue({
         userId: 'user-456',
@@ -116,9 +113,7 @@ describe('Socket Auth Middleware', () => {
     });
 
     it('should call next without error on success', () => {
-      mockSocket.handshake = {
-        auth: { token: 'valid-token' },
-      } as any;
+      mockSocket = createMockSocket({ token: 'valid-token' });
 
       (jwtUtil.verifyToken as jest.Mock).mockReturnValue({
         userId: 'user-123',
@@ -135,9 +130,7 @@ describe('Socket Auth Middleware', () => {
     });
 
     it('should attach user data to socket.data', () => {
-      mockSocket.handshake = {
-        auth: { token: 'valid-token' },
-      } as any;
+      mockSocket = createMockSocket({ token: 'valid-token' });
 
       (jwtUtil.verifyToken as jest.Mock).mockReturnValue({
         userId: 'user-123',

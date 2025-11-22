@@ -1,13 +1,24 @@
 // Main entry point for Voxel Battleship client
-console.log('Voxel Battleship - Client Initializing...');
+import { Game } from './Game';
 
-// This will be populated in later steps
-// Step 4 will add Three.js scene setup
-// Step 5 will add Socket.io integration
+console.log('🚢 Voxel Battleship - Initializing...');
 
-const loadingScreen = document.getElementById('loading-screen');
-if (loadingScreen) {
-  setTimeout(() => {
-    loadingScreen.classList.add('hidden');
-  }, 1000);
-}
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    // Initialize the game
+    const game = new Game();
+    console.log('✅ Game initialized successfully');
+
+    // Handle cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      game.dispose();
+    });
+
+    // Expose to window for debugging (optional)
+    (window as any).game = game;
+  } catch (error) {
+    console.error('❌ Failed to initialize game:', error);
+    alert('Failed to initialize game. Please refresh the page.');
+  }
+});

@@ -121,28 +121,97 @@ npm run build            # Build both projects
 - Docker Compose for PostgreSQL & Redis
 - Prisma ORM configuration
 
-### 🔄 Step 2: Backend Core (Next)
+### ✅ Step 2: Backend Core (Complete)
 - User authentication (Register/Login)
 - JWT middleware
-- Basic Socket.io setup
-- Redis connection
+- Socket.io setup with authentication
+- Redis connection and state management
 
-### 📋 Step 3: Game Logic (Planned)
-- Battleship game rules
+### ✅ Step 3: Game Logic (Complete)
+- Battleship game rules implementation
 - Ship placement validation
 - Turn management
+- Hit detection algorithm
 - Win condition checking
+- Match persistence
 
-### 📋 Step 4: Frontend Core (Planned)
-- Three.js scene setup
-- Voxel rendering
-- Camera controls
-- UI overlays
+### ✅ Step 4: Frontend Core (Complete)
+- Three.js scene setup with lighting
+- Voxel rendering system (Minecraft aesthetic)
+- Water grid visualization
+- Camera controls (OrbitControls)
+- UI overlays and screens
+- Socket.io client service
 
-### 📋 Step 5: Integration (Planned)
+### ✅ Step 5: Integration (Complete)
+- Complete game application orchestration
 - Socket event handling
 - Game state synchronization
-- Real-time updates
+- Real-time 3D updates
+- Ship placement interaction
+- Attack phase interaction
+
+## How to Play
+
+### 1. Create an Account
+- Enter your email and password
+- Click "Register" to create a new account
+- Or click "Login" if you already have an account
+
+### 2. Start a Game
+- **Create Game**: Click "Create New Game" to generate a room code
+- **Join Game**: Click "Join Game" and enter a friend's room code
+
+### 3. Place Your Ships
+- Click on the water grid to place each ship
+- Press 'R' to rotate between horizontal and vertical
+- Place all 5 ships:
+  - Carrier (5 cells)
+  - Battleship (4 cells)
+  - Cruiser (3 cells)
+  - Submarine (3 cells)
+  - Destroyer (2 cells)
+- Click "Confirm Placement" when done
+
+### 4. Battle!
+- Take turns with your opponent
+- Click on opponent's board to fire shots
+- Red markers = Hits
+- White markers = Misses
+- Sink all enemy ships to win!
+
+### 5. Controls
+- **Mouse**: Click to place ships / fire shots
+- **R key**: Rotate ship orientation
+- **Mouse drag**: Rotate camera view
+- **Scroll**: Zoom in/out
+
+## Game Features
+
+### Visual Features
+- 🧊 Voxel-based Minecraft aesthetic
+- 🌊 Animated water blocks
+- 💥 Explosion particle effects on hits
+- 🎯 Targeting reticle system
+- ✨ Dynamic lighting and shadows
+- 🌫️ Atmospheric fog effects
+- 🎨 Color-coded ships
+
+### Gameplay Features
+- 🎮 Real-time multiplayer
+- 🔐 Secure authentication
+- 📊 Player statistics tracking
+- 💬 Real-time notifications
+- 🏆 Match history
+- 📱 Responsive design
+
+### Technical Features
+- ⚡ Fast real-time updates via Socket.io
+- 💾 Persistent data in PostgreSQL
+- 🚀 In-memory game state with Redis
+- 🔒 JWT authentication
+- 📡 WebSocket communication
+- 🎨 Three.js 3D rendering
 
 ## Environment Variables
 

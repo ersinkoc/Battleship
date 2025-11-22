@@ -1,0 +1,63 @@
+// Prisma Schema for Battleship Game
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Stats
+  gamesPlayed  Int @default(0) @map("games_played")
+  gamesWon     Int @default(0) @map("games_won")
+  gamesLost    Int @default(0) @map("games_lost")
+  totalShots   Int @default(0) @map("total_shots")
+  totalHits    Int @default(0) @map("total_hits")
+
+  // Relations
+  matchesAsPlayer1 Match[] @relation("Player1Matches")
+  matchesAsPlayer2 Match[] @relation("Player2Matches")
+
+  @@map("users")
+}
+
+model Match {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  endedAt   DateTime? @map("ended_at")
+
+  // Players
+  player1Id String @map("player1_id")
+  player2Id String @map("player2_id")
+
+  // Match outcome
+  winnerId  String? @map("winner_id")
+  status    MatchStatus @default(IN_PROGRESS)
+
+  // Game statistics
+  totalTurns    Int @default(0) @map("total_turns")
+  player1Shots  Int @default(0) @map("player1_shots")
+  player2Shots  Int @default(0) @map("player2_shots")
+  player1Hits   Int @default(0) @map("player1_hits")
+  player2Hits   Int @default(0) @map("player2_hits")
+
+  // Relations
+  player1 User @relation("Player1Matches", fields: [player1Id], references: [id])
+  player2 User @relation("Player2Matches", fields: [player2Id], references: [id])
+
+  @@map("matches")
+}
+
+enum MatchStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}

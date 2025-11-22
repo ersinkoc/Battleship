@@ -11,30 +11,39 @@ process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test_db';
 process.env.REDIS_HOST = 'localhost';
 process.env.REDIS_PORT = '6379';
 
-// Mock Prisma Client before any modules are imported
+// Mock Prisma Client constructor validation for Prisma 7
+// This prevents the "adapter or accelerateUrl required" error
 jest.mock('@prisma/client', () => {
-  const mockPrismaClient = {
-    $connect: jest.fn().mockResolvedValue(undefined),
-    $disconnect: jest.fn().mockResolvedValue(undefined),
-    $queryRaw: jest.fn(),
-    user: {
+  const actual = jest.requireActual('@prisma/client');
+
+  // Create a mock PrismaClient that doesn't validate constructor options
+  class MockPrismaClient {
+    $connect = jest.fn().mockResolvedValue(undefined);
+    $disconnect = jest.fn().mockResolvedValue(undefined);
+    $queryRaw = jest.fn();
+    user = {
       findUnique: jest.fn(),
       findMany: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
-    },
-    match: {
+    };
+    match = {
       findUnique: jest.fn(),
       findMany: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
-    },
-  };
+    };
+
+    constructor() {
+      // Allow construction without validation
+    }
+  }
 
   return {
-    PrismaClient: jest.fn(() => mockPrismaClient),
+    ...actual,
+    PrismaClient: MockPrismaClient,
   };
 });
 

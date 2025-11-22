@@ -174,7 +174,8 @@ describe('GameService', () => {
   });
 
   describe('fireShot', () => {
-    const playingRoom: GameRoom = {
+    // Helper function to create a fresh playing room for each test
+    const createPlayingRoom = (): GameRoom => ({
       roomCode: 'ROOM01',
       player1Id: 'player1',
       player2Id: 'player2',
@@ -216,10 +217,10 @@ describe('GameService', () => {
         player2: { shots: 0, hits: 0, misses: 0 },
       },
       createdAt: Date.now(),
-    };
+    });
 
     it('should process a miss correctly', async () => {
-      (redisService.getGameRoom as jest.Mock).mockResolvedValue({ ...playingRoom });
+      (redisService.getGameRoom as jest.Mock).mockResolvedValue(createPlayingRoom());
       (redisService.updateGameRoom as jest.Mock).mockResolvedValue(undefined);
 
       const result = await gameService.fireShot('ROOM01', 'player1', { x: 0, y: 0 });
@@ -232,7 +233,7 @@ describe('GameService', () => {
     });
 
     it('should process a hit correctly', async () => {
-      (redisService.getGameRoom as jest.Mock).mockResolvedValue({ ...playingRoom });
+      (redisService.getGameRoom as jest.Mock).mockResolvedValue(createPlayingRoom());
       (redisService.updateGameRoom as jest.Mock).mockResolvedValue(undefined);
 
       const result = await gameService.fireShot('ROOM01', 'player1', { x: 5, y: 5 });
@@ -243,10 +244,11 @@ describe('GameService', () => {
     });
 
     it('should process a sunk ship correctly', async () => {
+      const baseRoom = createPlayingRoom();
       const roomWithDamagedShip = {
-        ...playingRoom,
+        ...baseRoom,
         boards: {
-          ...playingRoom.boards,
+          ...baseRoom.boards,
           player2: {
             ships: [
               {
@@ -282,7 +284,7 @@ describe('GameService', () => {
     });
 
     it('should return error if game not in playing state', async () => {
-      const setupRoom = { ...playingRoom, status: 'setup' as const };
+      const setupRoom = { ...createPlayingRoom(), status: 'setup' as const };
       (redisService.getGameRoom as jest.Mock).mockResolvedValue(setupRoom);
 
       const result = await gameService.fireShot('ROOM01', 'player1', { x: 0, y: 0 });
@@ -292,7 +294,7 @@ describe('GameService', () => {
     });
 
     it('should return error if not player\'s turn', async () => {
-      (redisService.getGameRoom as jest.Mock).mockResolvedValue({ ...playingRoom });
+      (redisService.getGameRoom as jest.Mock).mockResolvedValue(createPlayingRoom());
 
       const result = await gameService.fireShot('ROOM01', 'player2', { x: 0, y: 0 });
 
@@ -301,12 +303,13 @@ describe('GameService', () => {
     });
 
     it('should return error if coordinate already attacked', async () => {
+      const baseRoom = createPlayingRoom();
       const roomWithShots = {
-        ...playingRoom,
+        ...baseRoom,
         boards: {
-          ...playingRoom.boards,
+          ...baseRoom.boards,
           player2: {
-            ...playingRoom.boards.player2,
+            ...baseRoom.boards.player2,
             misses: [{ x: 0, y: 0 }],
           },
         },
@@ -320,7 +323,7 @@ describe('GameService', () => {
     });
 
     it('should switch turns after shot', async () => {
-      (redisService.getGameRoom as jest.Mock).mockResolvedValue({ ...playingRoom });
+      (redisService.getGameRoom as jest.Mock).mockResolvedValue(createPlayingRoom());
       (redisService.updateGameRoom as jest.Mock).mockResolvedValue(undefined);
 
       await gameService.fireShot('ROOM01', 'player1', { x: 0, y: 0 });
@@ -331,7 +334,7 @@ describe('GameService', () => {
     });
 
     it('should increment shot statistics', async () => {
-      (redisService.getGameRoom as jest.Mock).mockResolvedValue({ ...playingRoom });
+      (redisService.getGameRoom as jest.Mock).mockResolvedValue(createPlayingRoom());
       (redisService.updateGameRoom as jest.Mock).mockResolvedValue(undefined);
 
       await gameService.fireShot('ROOM01', 'player1', { x: 0, y: 0 });

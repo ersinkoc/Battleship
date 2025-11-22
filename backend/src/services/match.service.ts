@@ -69,18 +69,22 @@ class MatchService {
     // Update user stats
     const loserId = winnerId === match.player1Id ? match.player2Id : match.player1Id;
 
+    // Safely get stats with defaults for missing data
+    const winnerStats = gameStats[winnerId] || { shots: 0, hits: 0 };
+    const loserStats = gameStats[loserId] || { shots: 0, hits: 0 };
+
     await authService.updateUserStats(
       winnerId,
       true,
-      gameStats[winnerId].shots,
-      gameStats[winnerId].hits
+      winnerStats.shots,
+      winnerStats.hits
     );
 
     await authService.updateUserStats(
       loserId,
       false,
-      gameStats[loserId].shots,
-      gameStats[loserId].hits
+      loserStats.shots,
+      loserStats.hits
     );
 
     return updatedMatch;
